@@ -23,22 +23,32 @@ class UnitsController < ApplicationController
       "unit_name" => "",
       "multiplication_factor" => 1
     }
-    numerator = params[:units].split("/").first.scan(/\w+/) +
+    denominators = []
+    numerators = params[:units].split("/").first.scan(/\w+/) +
     params[:units].split("/").first.scan(/[\']/) +
     params[:units].split("/").first.scan(/[\°]/) +
     params[:units].split("/").first.scan(/[\"]/)
 
-    denominator = params[:units].split("/").last.scan(/\w+/) +
-    params[:units].split("/").last.scan(/[\']/) +
-    params[:units].split("/").last.scan(/[\°]/) +
-    params[:units].split("/").last.scan(/[\"]/)
+    if params[:units].include?("/")
+      denominators = params[:units].split("/").last.scan(/\w+/) +
+      params[:units].split("/").last.scan(/[\']/) +
+      params[:units].split("/").last.scan(/[\°]/) +
+      params[:units].split("/").last.scan(/[\"]/)
+    end
 
-    # params[:units].split("/")
-    # params[:units].each_char do |c|
+    numerators.each do |numerator|
+      answer["unit_name"] += (answer["unit_name"] == "") ? table[numerator].last : "*" + table[numerator].last
+      answer["multiplication_factor"] *= table[numerator].first
+    end
 
-    # @test = params[:units]
-    # @test = table["\""]
-    @test = "ha*'"
+p denominators
+    denominators.each do |denominator|
+      answer["unit_name"] += answer["unit_name"].include?("/") ? "*" + table[denominator].last : "/" + table[denominator].last
+      answer["multiplication_factor"] /= table[denominator].first
+    end
 
+    answer["multiplication_factor"] = answer["multiplication_factor"].round(14)
+
+    @test = answer
   end
 end
