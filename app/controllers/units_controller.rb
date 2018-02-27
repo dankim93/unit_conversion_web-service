@@ -41,7 +41,6 @@ class UnitsController < ApplicationController
       answer["multiplication_factor"] *= table[numerator].first
     end
 
-p denominators
     denominators.each do |denominator|
       answer["unit_name"] += answer["unit_name"].include?("/") ? "*" + table[denominator].last : "/" + table[denominator].last
       answer["multiplication_factor"] /= table[denominator].first
